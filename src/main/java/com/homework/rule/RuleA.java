@@ -3,13 +3,14 @@ package com.homework.rule;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import com.homework.dto.LogBase;
-import com.homework.dto.LogCharge;
-import com.homework.dto.LogOpenAccount;
-import com.homework.dto.LogTransfer;
+import com.homework.dto.log.LogBase;
+import com.homework.dto.log.LogCharge;
+import com.homework.dto.log.LogOpenAccount;
+import com.homework.dto.log.LogTransfer;
 
 
 
@@ -18,6 +19,8 @@ public class RuleA implements RuleBase{
 	private int withinHour;
 	private BigDecimal charge;
 	private BigDecimal balance;
+	
+	private String className = this.getClass().getSimpleName();
 	
 	
 	public RuleA(int withinHour , BigDecimal charge , BigDecimal balance) {
@@ -33,6 +36,10 @@ public class RuleA implements RuleBase{
 	 * 후 잔액이 1000원 이하가 되는 경우
 	 * -> 송금을 했다는 뜻이겠지??
 	 */
+		
+		//시간순으로 정렬 
+		Collections.sort(logList);
+		
 		BigDecimal tmpBalance = new BigDecimal(0); // 로그상 유저의 잔액을 저장할 변수
 		LocalDateTime openDateTime = null;
 		LocalDateTime chargeDateTime = null;
@@ -69,7 +76,7 @@ public class RuleA implements RuleBase{
 					
 					if(this.balance.compareTo(tmpBalance.subtract(logTransfer.getSendAmount())) > 0){
 						//모든 조건에부합함. 
-						hashMap.put(this.getClass().getName(), false);
+						hashMap.put(className, false);
 						return hashMap;
 					}
 				}
@@ -78,7 +85,7 @@ public class RuleA implements RuleBase{
 			
 		}
 		
-		hashMap.put(this.getClass().getName(), true);
+		hashMap.put(className, true);
 		return hashMap;
 	}
 

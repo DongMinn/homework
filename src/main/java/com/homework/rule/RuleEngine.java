@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.homework.dto.LogBase;
+import com.homework.dto.log.LogBase;
 
 public class RuleEngine implements RuleBase {
 
@@ -27,7 +27,7 @@ public class RuleEngine implements RuleBase {
 		
 		//룰 순회하면서 로그 리스트 체크 후 결과 map에 저장 
 		for(RuleBase rule : ruleList){
-			resultMap.put(rule.getClass().getName(), rule.fraudCheck(logList).get(rule.getClass().getName()));  
+			resultMap.put(rule.getClass().getSimpleName(), rule.fraudCheck(logList).get(rule.getClass().getSimpleName()));  
 		}
 		
 		return resultMap;

@@ -3,18 +3,21 @@ package com.homework.rule;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import com.homework.dto.LogBase;
-import com.homework.dto.LogOpenAccount;
-import com.homework.dto.LogReceive;
+import com.homework.dto.log.LogBase;
+import com.homework.dto.log.LogOpenAccount;
+import com.homework.dto.log.LogReceive;
 
 public class RuleB implements RuleBase {
 
 	private int withinDay;
 	private BigDecimal receiveAmount;
 	private int count;
+	
+	private String className = this.getClass().getSimpleName();
 	
 	public RuleB(int withinDay , BigDecimal receiveAmount , int count) {
 		this.withinDay = withinDay;
@@ -28,6 +31,10 @@ public class RuleB implements RuleBase {
 		 * - 카카오머니 서비스 계좌 개설을 하고 7일 이내, 
 		 * 카카오머니 받기로 10만원 이상 금액을 5회 이상 하는 경우
 		 */
+		
+		//시간순으로 정렬 
+		Collections.sort(logList);
+		
 		int checkCount = 0;
 		LocalDate openDate = null;
 		LocalDate receiveDate = null;
@@ -58,9 +65,9 @@ public class RuleB implements RuleBase {
 			
 		}
 		if(checkCount>=this.count){// 조건에 부합하는 경우 
-			hashMap.put(this.getClass().getName(), false);
+			hashMap.put(className, false);
 		}else{
-			hashMap.put(this.getClass().getName(), true);
+			hashMap.put(className, true);
 		}
 		return hashMap;
 	}

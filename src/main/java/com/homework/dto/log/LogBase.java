@@ -1,14 +1,14 @@
-package com.homework.dto;
+package com.homework.dto.log;
 
 import java.time.LocalDateTime;
 
 public class LogBase implements Comparable<LogBase>{
 	private LocalDateTime updateDateTime;
-	private String userId;
+	private long userId;
 	private String kakaoAccountNo;
 	
 	
-	public LogBase(LocalDateTime updateDateTime , String userId , String kakaoAccountNo) {
+	public LogBase(LocalDateTime updateDateTime , long userId , String kakaoAccountNo) {
 		this.updateDateTime = updateDateTime;
 		this.userId = userId;
 		this.kakaoAccountNo = kakaoAccountNo;

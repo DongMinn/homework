@@ -3,7 +3,7 @@ package com.homework.rule;
 import java.util.HashMap;
 import java.util.List;
 
-import com.homework.dto.LogBase;
+import com.homework.dto.log.LogBase;
 
 public interface RuleBase {
 

@@ -34,7 +34,7 @@ public class TestRuleEngine {
 	RuleEngine ruleEngine = new RuleEngine();
 	
 	@Test
-	public void ruleEngine_B와C규칙_충족하는_경우(){
+	public void ruleEngine_BC_규칙_충족하는_경우(){
 		
 		
 		ruleEngine.addRule(ruleA);

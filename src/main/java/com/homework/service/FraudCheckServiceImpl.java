@@ -9,6 +9,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.homework.dao.UserLogDao;
 import com.homework.dto.ResponseDto;
 import com.homework.dto.log.LogBase;
 import com.homework.rule.RuleEngine;
@@ -19,9 +20,14 @@ public class FraudCheckServiceImpl implements FraudCheckService {
 	@Autowired
 	private RuleEngine ruleEngine;
 	
+	@Autowired
+	private UserLogDao userLogDao;
+	
 	@Override
-	public ResponseDto isFraud(long user_id , List<LogBase> logList) { 
-		HashMap<String, Boolean> checkedFraud = ruleEngine.checkFraud(logList);
+	public ResponseDto isFraud(long user_id) { 
+		
+		
+		HashMap<String, Boolean> checkedFraud = ruleEngine.checkFraud(userLogDao.findById(user_id));
 		ResponseDto responseDto = new ResponseDto(user_id); 
 		responseDto.setIs_fraud(true);
 		

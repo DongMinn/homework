@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class LogReceive extends LogBase{
-	private BigDecimal balance; //받기전 계좌 잔액 
+	private BigDecimal balance;  
 	private String senderKakaoAccountNo;
 	private long senderId;
 	private BigDecimal receiveAmount;

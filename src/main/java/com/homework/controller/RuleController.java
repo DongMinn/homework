@@ -1,7 +1,5 @@
 package com.homework.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,9 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.homework.dao.UserLogDao;
 import com.homework.dto.ResponseDto;
-import com.homework.dto.log.LogBase;
+
 import com.homework.service.FraudCheckService;
 
 @RestController
@@ -21,13 +18,10 @@ public class RuleController {
 	@Autowired
 	private FraudCheckService fraudCheckService;
 	
-	@Autowired
-	private UserLogDao userLogDao;
-	
 	@RequestMapping(value = "/v1/fraud/{user_id}", method = RequestMethod.GET)
 	public ResponseEntity<ResponseDto> isFraud(@PathVariable("user_id") final long user_id){		
-		List<LogBase> logList = userLogDao.findById(user_id);
-		ResponseDto responseDto = fraudCheckService.isFraud(user_id , logList);
+		
+		ResponseDto responseDto = fraudCheckService.isFraud(user_id);
 	
 		if(responseDto.getRule() == null){
 			return new ResponseEntity<ResponseDto>(responseDto , HttpStatus.NO_CONTENT);

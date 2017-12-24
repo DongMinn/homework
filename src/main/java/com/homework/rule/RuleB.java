@@ -12,7 +12,7 @@ import com.homework.dto.log.LogOpenAccount;
 import com.homework.dto.log.LogReceive;
 
 /*
- * - 카카오머니 서비스 계좌 개설을 하고 7일 이내, 
+ * 카카오머니 서비스 계좌 개설을 하고 7일 이내, 
  * 카카오머니 받기로 10만원 이상 금액을 5회 이상 하는 경우
  */
 public class RuleB implements RuleBase {
@@ -41,19 +41,17 @@ public class RuleB implements RuleBase {
 		if(logList==null) return null;
 		
 		for(LogBase log: logList){
-			//계좌 개설 시간 저장 
 			if(log instanceof LogOpenAccount){
 				openDate = log.getUpdateDateTime().toLocalDate();
 			}else if(log instanceof LogReceive){
 				LogReceive logReceive = (LogReceive)log;
 				if(openDate!=null && isFraudReceive(logReceive, openDate)){
-					checkCount++;	//TODO: Thread-safe 
+					checkCount++;	 
 				}		
 			}
-			
 		}
 		
-		if(checkCount>=count){// 조건에 부합하는 경우 
+		if(checkCount>=count){ 
 			result.put(className, true);
 		}
 		

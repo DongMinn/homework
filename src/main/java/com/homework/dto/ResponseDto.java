@@ -23,7 +23,7 @@ public class ResponseDto  {
 	public void setUser_id(long user_id) {
 		this.user_id = user_id;
 	}
-	public boolean isIs_fraud() {
+	public boolean getIs_fraud() {
 		return is_fraud;
 	}
 	public void setIs_fraud(boolean is_fraud) {

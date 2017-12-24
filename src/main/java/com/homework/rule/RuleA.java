@@ -37,22 +37,20 @@ public class RuleA implements RuleBase{
 	public HashMap<String, Boolean> checkFraud(List<LogBase> logList) {
 		Collections.sort(logList);
 		
-		BigDecimal tmpBalance = new BigDecimal(0); // 로그상 유저의 잔액을 저장할 변수
+		BigDecimal tmpBalance = new BigDecimal(0); 
 		LocalDateTime openDateTime = null;
 		HashMap<String, Boolean> result = new HashMap<>();
 		result.put(className, false);
 		
-		if(logList==null) return null;	//Test 코드에 추가, 추가로 확인하기 
+		if(logList==null) return null;	 
 		
 		for(LogBase log: logList){
-			//계좌 개설 시간 저장 
 			if(log instanceof LogOpenAccount){
 				openDateTime = log.getUpdateDateTime();
-			}//충전한 금액, 시간 조건에 맞으면 잔액 추가 
+			} 
 			else if(log instanceof LogCharge){
 				LogCharge logCharge = (LogCharge)log;
-				
-				//계좌 개설 로그가 있으면서, 충전한시간과 계좌개설시간이 x시간 이내인경우 
+				 
 				if(openDateTime!=null && isFraudCharge(logCharge, openDateTime)){
 					tmpBalance = tmpBalance.add(logCharge.getChareAmount());
 				}
@@ -60,8 +58,7 @@ public class RuleA implements RuleBase{
 				LogTransfer logTransfer = (LogTransfer)log;
 				
 				if(openDateTime != null && isFraudTransfer(logTransfer, openDateTime)){
-					if(balance.compareTo(tmpBalance.subtract(logTransfer.getSendAmount())) > 0){
-						//모든 조건에부합함. 
+					if(balance.compareTo(tmpBalance.subtract(logTransfer.getSendAmount())) > 0){ 
 						result.put(className,true);
 						return result;
 					}

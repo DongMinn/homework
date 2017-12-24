@@ -25,6 +25,10 @@ public class FraudCheckServiceImpl implements FraudCheckService {
 		ResponseDto responseDto = new ResponseDto(user_id); 
 		responseDto.setIs_fraud(true);
 		
+		if(checkedFraud == null){
+			return responseDto;
+		}
+		
 		Iterator<String> keys = checkedFraud.keySet().iterator();
 		
 		ArrayList<String> fraudRules = new ArrayList<String>();
@@ -35,11 +39,14 @@ public class FraudCheckServiceImpl implements FraudCheckService {
 			}
 		} 
 		
-		responseDto.setRule(String.join(",", fraudRules));
 		
-		if(responseDto.getRule()!=null){
+		if(fraudRules.size() > 0){
+			responseDto.setRule(String.join(",", fraudRules));
 			responseDto.setIs_fraud(false);
+		}else{
+			responseDto.setRule("");
 		}
+		
 		return responseDto;
 	}
 

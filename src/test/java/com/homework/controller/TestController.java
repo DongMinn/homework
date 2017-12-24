@@ -64,23 +64,42 @@ public class TestController {
 	}
 	
 	@Test
-	public void restAPI_테스트() throws Exception{
+	public void restAPI_로그데이터_존재하는_경우() throws Exception{
 		
 		List<LogBase> logList = new ArrayList<LogBase>();
 		
 		when(mockUserLogDao.findById(411)).thenReturn(logList);
-		when(fraudCheckServiceImple.isFraud(411, logList)).thenReturn(new ResponseDto(411, false, "RuleB,RuleC"));
+		when(fraudCheckServiceImple.isFraud(411, logList)).thenReturn(new ResponseDto(411, true, "RuleB,RuleC"));
 		
 		
 		mockMvc.perform(get("/v1/fraud/{user_id}"  , 411))
 					.andExpect(status().isOk())
 					.andExpect(jsonPath("$.user_id", is(411)))
-					.andExpect(jsonPath("$.is_fraud", is(false)))
+					.andExpect(jsonPath("$.is_fraud", is(true)))
 					.andExpect(jsonPath("$.rule", is("RuleB,RuleC")));
 		
 		
 		verify(mockUserLogDao, times(1)).findById(411);
 		verify(fraudCheckServiceImple, times(1)).isFraud(411, logList);
+		verifyNoMoreInteractions(mockUserLogDao);
+		verifyNoMoreInteractions(fraudCheckServiceImple);
+							
+				
+	}
+	@Test
+	public void restAPI_로그데이터_존재하지않는_경우() throws Exception{
+		
+		
+		when(mockUserLogDao.findById(411)).thenReturn(null);
+		when(fraudCheckServiceImple.isFraud(411, null)).thenReturn(new ResponseDto(411, false, null));
+		
+		
+		mockMvc.perform(get("/v1/fraud/{user_id}"  , 411))
+					.andExpect(status().isNoContent());
+		
+		
+		verify(mockUserLogDao, times(1)).findById(411);
+		verify(fraudCheckServiceImple, times(1)).isFraud(411, null);
 		verifyNoMoreInteractions(mockUserLogDao);
 		verifyNoMoreInteractions(fraudCheckServiceImple);
 							

@@ -28,7 +28,10 @@ public class RuleController {
 	public ResponseEntity<ResponseDto> isFraud(@PathVariable("user_id") final long user_id){		
 		List<LogBase> logList = userLogDao.findById(user_id);
 		ResponseDto responseDto = fraudCheckService.isFraud(user_id , logList);
-		
+	
+		if(responseDto.getRule() == null){
+			return new ResponseEntity<ResponseDto>(responseDto , HttpStatus.NO_CONTENT);
+		}
 		return new ResponseEntity<ResponseDto>(responseDto , HttpStatus.OK);
 	}
 	

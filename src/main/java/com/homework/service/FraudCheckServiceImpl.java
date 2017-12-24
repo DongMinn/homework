@@ -1,5 +1,6 @@
 package com.homework.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -8,9 +9,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.homework.dao.UserLogDao;
+import com.homework.dto.ResponseDto;
 import com.homework.dto.log.LogBase;
-import com.homework.dto.response.ResponseDto;
 import com.homework.rule.RuleEngine;
 
 @Service
@@ -20,36 +20,27 @@ public class FraudCheckServiceImpl implements FraudCheckService {
 	private RuleEngine ruleEngine;
 	
 	@Override
-	public ResponseDto isFraud(long user_id , List<LogBase> logList) {
-		HashMap<String, Boolean> hashMap = new HashMap<>();
-		ResponseDto resDto = new ResponseDto();
-		 
-		hashMap = ruleEngine.fraudCheck(logList);
-		 
-		Iterator<String> keys = hashMap.keySet().iterator();
+	public ResponseDto isFraud(long user_id , List<LogBase> logList) { 
+		HashMap<String, Boolean> checkedFraud = ruleEngine.checkFraud(logList);
+		ResponseDto responseDto = new ResponseDto(user_id); 
+		responseDto.setIs_fraud(true);
 		
-		resDto.setUser_id(user_id);
-		resDto.setRule(null);
+		Iterator<String> keys = checkedFraud.keySet().iterator();
 		
+		ArrayList<String> fraudRules = new ArrayList<String>();
 		while(keys.hasNext()){
 			String key = keys.next();
-			if(hashMap.get(key)==false){
-				if(resDto.getRule()==null){
-					resDto.setRule(key);
-				}else{
-					String tmp = resDto.getRule();
-					tmp +=", "+ key;
-					resDto.setRule(tmp);
-				}
+			if(checkedFraud.get(key)==false){
+				fraudRules.add(key);
 			}
 		} 
-		if(resDto.getRule()==null){
-			resDto.setIs_fraud(true);
-		}else{
-			resDto.setIs_fraud(false);
-		}
 		
-		return resDto;
+		responseDto.setRule(String.join(",", fraudRules));
+		
+		if(responseDto.getRule()!=null){
+			responseDto.setIs_fraud(false);
+		}
+		return responseDto;
 	}
 
 }

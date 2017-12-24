@@ -1,4 +1,4 @@
-package com.homework.service;
+package com.homework.controller;
 
 import static org.hamcrest.CoreMatchers.is;
 
@@ -12,6 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,14 +31,16 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.homework.controller.RuleController;
 import com.homework.dao.UserLogDao;
+import com.homework.dto.ResponseDto;
 import com.homework.dto.log.LogBase;
 import com.homework.dto.log.LogCharge;
 import com.homework.dto.log.LogOpenAccount;
+import com.homework.dto.log.LogReceive;
 import com.homework.dto.log.LogTransfer;
-import com.homework.dto.response.ResponseDto;
+import com.homework.service.FraudCheckServiceImpl;
 
 @RunWith(MockitoJUnitRunner.class)
-public class TestService {
+public class TestController {
 
 
 	private MockMvc mockMvc;
@@ -61,21 +64,19 @@ public class TestService {
 	}
 	
 	@Test
-	public void findById_ruleCheckA_false() throws Exception{
+	public void restAPI_테스트() throws Exception{
 		
-		List<LogBase> logList = Arrays.asList(
-				new LogOpenAccount(LocalDateTime.of(2017, 12, 20, 17, 0), 411, "110-228-1000"),
-				new LogCharge(LocalDateTime.of(2017, 12, 20, 17, 20), 411, "110-228-1000", new BigDecimal(200000), "0107118"),
-				new LogTransfer(LocalDateTime.of(2017, 12, 20, 17, 40), 411, "110-228-1000", new BigDecimal(200000), "110-228-2000", 412, new BigDecimal(199900))
-				);
+		List<LogBase> logList = new ArrayList<LogBase>();
+		
 		when(mockUserLogDao.findById(411)).thenReturn(logList);
-		when(fraudCheckServiceImple.isFraud(411, logList)).thenReturn(new ResponseDto(411, false, "RuleA"));
+		when(fraudCheckServiceImple.isFraud(411, logList)).thenReturn(new ResponseDto(411, false, "RuleB,RuleC"));
+		
 		
 		mockMvc.perform(get("/v1/fraud/{user_id}"  , 411))
 					.andExpect(status().isOk())
 					.andExpect(jsonPath("$.user_id", is(411)))
 					.andExpect(jsonPath("$.is_fraud", is(false)))
-					.andExpect(jsonPath("$.rule", is("RuleA")));
+					.andExpect(jsonPath("$.rule", is("RuleB,RuleC")));
 		
 		
 		verify(mockUserLogDao, times(1)).findById(411);
@@ -84,5 +85,5 @@ public class TestService {
 		verifyNoMoreInteractions(fraudCheckServiceImple);
 							
 				
-	}	
+	}
 }

@@ -7,7 +7,6 @@ public class LogBase implements Comparable<LogBase>{
 	private long userId;
 	private String kakaoAccountNo;
 	
-	
 	public LogBase(LocalDateTime updateDateTime , long userId , String kakaoAccountNo) {
 		this.updateDateTime = updateDateTime;
 		this.userId = userId;
@@ -18,15 +17,12 @@ public class LogBase implements Comparable<LogBase>{
 		return updateDateTime;
 	}
 
-
 	@Override
-	public int compareTo(LogBase o) {
+	public int compareTo(LogBase log) {
 		// TODO Auto-generated method stub
-		if(this.updateDateTime.isBefore(o.getUpdateDateTime()))
+		if(updateDateTime.isBefore(log.getUpdateDateTime()))
 			return -1;
 		else 
 			return 1;
 	}
-	
-	
 }

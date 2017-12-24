@@ -4,15 +4,14 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class LogReceive extends LogBase{
-
 	private BigDecimal balance; //받기전 계좌 잔액 
 	private String senderKakaoAccountNo;
 	private long senderId;
 	private BigDecimal receiveAmount;
 	
 	public LogReceive(LocalDateTime updateDateTime, long userId, String kakaoAccountNo
-			,BigDecimal beforeReceiveBalance , String senderKakaoAccountNo
-			, long senderId , BigDecimal receiveAmount) {
+			, BigDecimal beforeReceiveBalance, String senderKakaoAccountNo
+			, long senderId, BigDecimal receiveAmount) {
 		super(updateDateTime, userId, kakaoAccountNo);
 		
 		this.balance = beforeReceiveBalance;
@@ -28,6 +27,4 @@ public class LogReceive extends LogBase{
 	public BigDecimal getReceiveAmount() {
 		return receiveAmount;
 	}
-	
-
 }

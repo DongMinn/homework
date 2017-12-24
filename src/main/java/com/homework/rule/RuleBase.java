@@ -6,6 +6,5 @@ import java.util.List;
 import com.homework.dto.log.LogBase;
 
 public interface RuleBase {
-
-	HashMap<String, Boolean> fraudCheck(final List<LogBase> logList);
+	HashMap<String, Boolean> checkFraud(final List<LogBase> logList);
 }

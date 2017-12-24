@@ -1,14 +1,15 @@
-package com.homework.dto.response;
-
-
+package com.homework.dto;
 
 public class ResponseDto  {
-
 	private long user_id;
 	private boolean is_fraud;
-	private String rule;
+	private String rule = null;
 	
 	public ResponseDto(){}
+	
+	public ResponseDto(long user_id){
+		this.user_id = user_id;
+	}
 	
 	public ResponseDto(long user_id , boolean is_fraud , String rule){
 		this.user_id = user_id;
@@ -33,7 +34,5 @@ public class ResponseDto  {
 	}
 	public void setRule(String rule) {
 		this.rule = rule;
-	}
-	
-	
+	}	
 }

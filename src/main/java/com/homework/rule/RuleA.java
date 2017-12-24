@@ -13,80 +13,73 @@ import com.homework.dto.log.LogOpenAccount;
 import com.homework.dto.log.LogTransfer;
 
 
+/*
+ * RuleA
+ * 카카오머니 서비스 계좌 개설을 하고 1시간 이내, 20만원 충전 
+ * 후 잔액이 1000원 이하가 되는 경우
+ */
 
 public class RuleA implements RuleBase{
 
 	private int withinHour;
-	private BigDecimal charge;
+	private BigDecimal chargeAmount;
 	private BigDecimal balance;
 	
-	private String className = this.getClass().getSimpleName();
+	private String className = getClass().getSimpleName();
 	
-	
-	public RuleA(int withinHour , BigDecimal charge , BigDecimal balance) {
+	public RuleA(int withinHour , BigDecimal chargeAmount , BigDecimal balance) {
 		this.withinHour = withinHour;
-		this.charge = charge;
+		this.chargeAmount = chargeAmount;
 		this.balance = balance;		
 	}
 	
 	@Override
-	public HashMap<String, Boolean> fraudCheck(List<LogBase> logList) {
-	/*
-	 * 카카오머니 서비스 계좌 개설을 하고 1시간 이내, 20만원 충전 
-	 * 후 잔액이 1000원 이하가 되는 경우
-	 * -> 송금을 했다는 뜻이겠지??
-	 */
-		
-		//시간순으로 정렬 
+	public HashMap<String, Boolean> checkFraud(List<LogBase> logList) {
 		Collections.sort(logList);
 		
 		BigDecimal tmpBalance = new BigDecimal(0); // 로그상 유저의 잔액을 저장할 변수
 		LocalDateTime openDateTime = null;
-		LocalDateTime chargeDateTime = null;
-		LocalDateTime transferDateTime = null;
-		HashMap<String, Boolean> hashMap = new HashMap<>();
+		HashMap<String, Boolean> result = new HashMap<>();
+		result.put(className, false);
 		
-		if(logList==null) return null;
+		if(logList==null) return null;	//Test 코드에 추가, 추가로 확인하기 
 		
 		for(LogBase log: logList){
-			
 			//계좌 개설 시간 저장 
 			if(log instanceof LogOpenAccount){
-				
 				openDateTime = log.getUpdateDateTime();
-				
 			}//충전한 금액, 시간 조건에 맞으면 잔액 추가 
 			else if(log instanceof LogCharge){
 				LogCharge logCharge = (LogCharge)log;
-				chargeDateTime = logCharge.getUpdateDateTime();
 				
 				//계좌 개설 로그가 있으면서, 충전한시간과 계좌개설시간이 x시간 이내인경우 
-				if(openDateTime!=null 
-						&& chargeDateTime.until(openDateTime, ChronoUnit.MINUTES)<(this.withinHour*60)
-						&& logCharge.getChareAmount().compareTo(this.charge) >= 0){
+				if(openDateTime!=null && isFraudCharge(logCharge, openDateTime)){
 					tmpBalance = tmpBalance.add(logCharge.getChareAmount());
 				}
-				
 			}else if(log instanceof LogTransfer){
 				LogTransfer logTransfer = (LogTransfer)log;
-				transferDateTime = logTransfer.getUpdateDateTime();
 				
-				if(openDateTime != null 
-						&& transferDateTime.until(openDateTime, ChronoUnit.MINUTES)<(this.withinHour*60) ){
-					
-					if(this.balance.compareTo(tmpBalance.subtract(logTransfer.getSendAmount())) > 0){
+				if(openDateTime != null && isFraudTransfer(logTransfer, openDateTime)){
+					if(balance.compareTo(tmpBalance.subtract(logTransfer.getSendAmount())) > 0){
 						//모든 조건에부합함. 
-						hashMap.put(className, false);
-						return hashMap;
+						result.put(className,true);
+						return result;
 					}
 				}
 				
 			}
 			
 		}
-		
-		hashMap.put(className, true);
-		return hashMap;
+
+		return result;
 	}
 
+	private Boolean isFraudCharge (LogCharge log, LocalDateTime openDateTime) {
+		return log.getUpdateDateTime().until(openDateTime, ChronoUnit.MINUTES) < (withinHour*60) 
+				&& log.getChareAmount().compareTo(chargeAmount) >= 0;
+	}
+	
+	private Boolean isFraudTransfer (LogTransfer log , LocalDateTime openDateTime) {
+		return log.getUpdateDateTime().until(openDateTime, ChronoUnit.MINUTES)<(withinHour*60);
+	}
 }

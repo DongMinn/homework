@@ -7,11 +7,8 @@ import java.util.List;
 import com.homework.dto.log.LogBase;
 
 public class RuleEngine implements RuleBase {
-
 	private List<RuleBase> ruleList = new ArrayList<>();
-	private HashMap<String, Boolean> resultMap = new HashMap<>();
-	
-	
+	private HashMap<String, Boolean> result = new HashMap<>();
 	
 	//룰 추가 
 	public void addRule(RuleBase rule){
@@ -23,14 +20,15 @@ public class RuleEngine implements RuleBase {
 	}
 	
 	@Override
-	public HashMap<String, Boolean> fraudCheck(List<LogBase> logList) {
+	public HashMap<String, Boolean> checkFraud(List<LogBase> logList) {
+		if(logList == null) return null;
 		
 		//룰 순회하면서 로그 리스트 체크 후 결과 map에 저장 
 		for(RuleBase rule : ruleList){
-			resultMap.put(rule.getClass().getSimpleName(), rule.fraudCheck(logList).get(rule.getClass().getSimpleName()));  
+			result.putAll(rule.checkFraud(logList));
 		}
 		
-		return resultMap;
+		return result;
 	}
 
 }

@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import com.homework.dao.UserLogDao;
 import com.homework.dto.ResponseDto;
 import com.homework.rule.RuleEngine;
-import com.homework.rule.UnifyRuleEngine;
 
 @Service
 public class FraudCheckServiceImpl implements FraudCheckService {

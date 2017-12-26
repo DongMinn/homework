@@ -3,21 +3,23 @@ package com.homework.service;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
+
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.homework.dao.UserLogDao;
 import com.homework.dto.ResponseDto;
-import com.homework.dto.log.LogBase;
 import com.homework.rule.RuleEngine;
+import com.homework.rule.UnifyRuleEngine;
 
 @Service
 public class FraudCheckServiceImpl implements FraudCheckService {
 
 	@Autowired
+	@Qualifier("unifyRuleEngine")
 	private RuleEngine ruleEngine;
 	
 	@Autowired

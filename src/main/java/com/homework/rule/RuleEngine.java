@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.springframework.stereotype.Component;
+
 import com.homework.dto.log.LogBase;
+
 
 public class RuleEngine implements RuleBase {
 	private List<RuleBase> ruleList = new ArrayList<>();

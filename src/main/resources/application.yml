@@ -1,0 +1,5 @@
+spring:
+  datasource:
+    url: 주소 
+    username: 아이디 
+    password: 패스워드 

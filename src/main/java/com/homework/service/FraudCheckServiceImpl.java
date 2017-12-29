@@ -30,7 +30,7 @@ public class FraudCheckServiceImpl implements FraudCheckService {
 		
 		HashMap<String, Boolean> checkedFraud = ruleEngine.checkFraud(userLogDao.findById(user_id));
 		ResponseDto responseDto = new ResponseDto(user_id); 
-		responseDto.setIs_fraud(true);
+		responseDto.setIs_fraud(false);
 		
 		if(checkedFraud == null){
 			return responseDto;
@@ -41,15 +41,15 @@ public class FraudCheckServiceImpl implements FraudCheckService {
 		ArrayList<String> fraudRules = new ArrayList<String>();
 		while(keys.hasNext()){
 			String key = keys.next();
-			if(checkedFraud.get(key)==false){
+			if(checkedFraud.get(key)==true){
 				fraudRules.add(key);
 			}
 		} 
 		
 		
 		if(fraudRules.size() > 0){
-			responseDto.setRule(String.join(",", fraudRules));
-			responseDto.setIs_fraud(false);
+			responseDto.setRule(String.join(",", fraudRules));  
+			responseDto.setIs_fraud(true);
 		}else{
 			responseDto.setRule("");
 		}
